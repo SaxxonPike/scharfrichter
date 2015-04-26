@@ -1,0 +1,106 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{DB34F6AF-C522-4149-A6D3-37A36D2D9590}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Scharfrichter.Codec</RootNamespace>
+    <AssemblyName>Scharfrichter.Codec</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\Output\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>
+    </ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Archives\%40Archive.cs" />
+    <Compile Include="Archives\Bemani1.cs" />
+    <Compile Include="Archives\Bemani2DX.cs" />
+    <Compile Include="Archives\BemaniIFS.cs" />
+    <Compile Include="Archives\BemaniSSP.cs" />
+    <Compile Include="Archives\BemaniSSQ.cs" />
+    <Compile Include="Archives\BMS.cs" />
+    <Compile Include="Archives\DJMain.cs" />
+    <Compile Include="Archives\Firebeat.cs" />
+    <Compile Include="Archives\MicrosoftXWB.cs" />
+    <Compile Include="Archives\StepmaniaSM.cs" />
+    <Compile Include="Archives\Twinkle.cs" />
+    <Compile Include="Charts\Beatmania7Key.cs" />
+    <Compile Include="Encryption\BemaniPCEout.cs" />
+    <Compile Include="Sounds\RF5C400.cs" />
+    <Compile Include="XACT3\Xact3WaveBank.cs" />
+    <Compile Include="BinaryIO.cs" />
+    <Compile Include="Charts\%40Chart.cs" />
+    <Compile Include="Charts\Beatmania5Key.cs" />
+    <Compile Include="Charts\BeatmaniaIIDXCSNew.cs" />
+    <Compile Include="Charts\BeatmaniaIIDXCSOld.cs" />
+    <Compile Include="Charts\BeatmaniaIIDXPC.cs" />
+    <Compile Include="Compression\BemaniLZ.cs" />
+    <Compile Include="Compression\BemaniLZSS.cs" />
+    <Compile Include="Compression\BemaniLZSS2.cs" />
+    <Compile Include="Compression\Huffman.Decoder.cs" />
+    <Compile Include="Compression\IFSImage.cs" />
+    <Compile Include="Encryption\BemaniPCAudio.cs" />
+    <Compile Include="Fraction.cs" />
+    <Compile Include="Graphics\%40Graphic.cs" />
+    <Compile Include="Heuristics\Bemani1.cs" />
+    <Compile Include="Heuristics\Bemani2DXArchive.cs" />
+    <Compile Include="Heuristics\BemaniImage2DXAC.cs" />
+    <Compile Include="Heuristics\BemaniModel2DXAC.cs" />
+    <Compile Include="Media\CHD.Codec.cs" />
+    <Compile Include="Media\CHD.cs" />
+    <Compile Include="Media\CHD.Stream.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Sounds\%40Sound.cs" />
+    <Compile Include="Sounds\Bemani2DXSound.cs" />
+    <Compile Include="Sounds\BemaniSD9.cs" />
+    <Compile Include="Sounds\K054539.cs" />
+    <Compile Include="Sounds\Render.cs" />
+    <Compile Include="Subfolder.cs" />
+    <Compile Include="Util.cs" />
+    <Compile Include="Videos\%40Video.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\NAudio\NAudio.csproj">
+      <Project>{DA4F02E3-0B5E-42CD-B8D9-5583FA51D66E}</Project>
+      <Name>NAudio</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
