@@ -95,10 +95,6 @@
       <Project>{DA4F02E3-0B5E-42CD-B8D9-5583FA51D66E}</Project>
       <Name>NAudio</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ZipStorerTest\ZipStorerTest.csproj">
-      <Project>{c7bef132-0048-4fdf-bc1e-c776de0983ae}</Project>
-      <Name>ZipStorerTest</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

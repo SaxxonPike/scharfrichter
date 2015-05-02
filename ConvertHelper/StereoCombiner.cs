@@ -81,7 +81,7 @@ namespace ConvertHelper
                             sounds[i].SetSound(output, sounds[i].Format);
                             sounds[j].SetSound(new byte[] { }, sounds[j].Format);
                             sounds[i].Panning = 0.5f;
-                            sounds[i].Volume = 1.0f;
+                            sounds[i].Volume = amplification;
                         }
                     }
                 }

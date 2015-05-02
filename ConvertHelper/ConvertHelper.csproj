@@ -46,6 +46,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Render.cs" />
     <Compile Include="StereoCombiner.cs" />
+    <Compile Include="StreamAdapter.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NAudio\NAudio.csproj">

@@ -256,6 +256,9 @@ namespace Scharfrichter.Codec.Sounds
             // flip stereo
             result.Panning = 1.0f - result.Panning;
 
+            // mark linear volume (since we converted it already)
+            result.VolumeIsLinear = true;
+
             // return the final result
             return result;
         }

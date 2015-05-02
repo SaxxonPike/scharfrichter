@@ -18,7 +18,9 @@ namespace Scharfrichter.Codec.Sounds
         public WaveFormat Format;
         public string Name = "";
         public float Panning = 0.5f;
+        public bool PanningIsLinear = false;
         public float Volume = 1.0f;
+        public bool VolumeIsLinear = false;
 
         public Sound()
         {
@@ -76,40 +78,48 @@ namespace Scharfrichter.Codec.Sounds
                         VolumeWaveProvider16 volLeft = new VolumeWaveProvider16(demuxLeft);
                         VolumeWaveProvider16 volRight = new VolumeWaveProvider16(demuxRight);
 
-                        // note: use logarithmic scale
-#if (true)
-                        // log scale is applied to each operation
-                        float volumeValueLeft = (float)Math.Pow(1.0f - Panning, 0.5f);
-                        float volumeValueRight = (float)Math.Pow(Panning, 0.5f);
-                        // ensure 1:1 conversion
-                        volumeValueLeft /= (float)Math.Sqrt(0.5);
-                        volumeValueRight /= (float)Math.Sqrt(0.5);
-                        // apply volume
-                        volumeValueLeft *= (float)Math.Pow(Volume, 0.5f);
-                        volumeValueRight *= (float)Math.Pow(Volume, 0.5f);
-                        // clamp
-                        volumeValueLeft = Math.Min(Math.Max(volumeValueLeft, 0.0f), 1.0f);
-                        volumeValueRight = Math.Min(Math.Max(volumeValueRight, 0.0f), 1.0f);
-#else
-                        // log scale is applied to the result of the operations
-                        float volumeValueLeft = (float)Math.Pow(1.0f - Panning, 0.5f);
-                        float volumeValueRight = (float)Math.Pow(Panning, 0.5f);
-                        // ensure 1:1 conversion
-                        volumeValueLeft /= (float)Math.Sqrt(0.5);
-                        volumeValueRight /= (float)Math.Sqrt(0.5);
-                        // apply volume
-                        volumeValueLeft *= Volume;
-                        volumeValueRight *= Volume;
-                        // apply log scale
-                        volumeValueLeft = (float)Math.Pow(volumeValueLeft, 0.5f);
-                        volumeValueRight = (float)Math.Pow(volumeValueRight, 0.5f);
-                        // clamp
-                        volumeValueLeft = Math.Min(Math.Max(volumeValueLeft, 0.0f), 1.0f);
-                        volumeValueRight = Math.Min(Math.Max(volumeValueRight, 0.0f), 1.0f);
-#endif
+                        float volumeValueLeft;
+                        float volumeValueRight;
+
+                        if (!PanningIsLinear)
+                        {
+                            // log scale is applied to each operation
+                            volumeValueLeft = (float)Math.Pow(1.0f - Panning, 0.5f);
+                            volumeValueRight = (float)Math.Pow(Panning, 0.5f);
+                        }
+                        else
+                        {
+                            float panValue = Panning;
+                            volumeValueLeft = (float)(1.0f - Panning);
+                            volumeValueRight = (float)(Panning);
+                        }
+
+                        if (!VolumeIsLinear)
+                        {
+                            // ensure 1:1 conversion
+                            volumeValueLeft /= (float)Math.Sqrt(0.5);
+                            volumeValueRight /= (float)Math.Sqrt(0.5);
+                            // apply volume
+                            volumeValueLeft *= (float)Math.Pow(Volume, 0.5f);
+                            volumeValueRight *= (float)Math.Pow(Volume, 0.5f);
+                        }
+                        else
+                        {
+                            volumeValueLeft *= Volume;
+                            volumeValueRight *= Volume;
+                        }
+
                         // use linear scale for master volume
-                        volLeft.Volume = volumeValueLeft * masterVolume;
-                        volRight.Volume = volumeValueRight * masterVolume;
+                        volumeValueLeft = volumeValueLeft * masterVolume;
+                        volumeValueRight = volumeValueRight * masterVolume;
+
+                        // clamp
+                        volumeValueLeft = Math.Max(volumeValueLeft, 0.0f);
+                        volumeValueRight = Math.Max(volumeValueRight, 0.0f);
+
+                        // assign final volume values
+                        volLeft.Volume = volumeValueLeft;
+                        volRight.Volume = volumeValueRight;
 
                         // step 3: combine them again
                         IWaveProvider[] tracks = new IWaveProvider[] { volLeft, volRight };
