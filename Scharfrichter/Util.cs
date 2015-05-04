@@ -203,6 +203,18 @@ namespace Scharfrichter.Codec
             return ConvertToAlphabetString(value, places, alphabetHex);
         }
 
+        public static void DiscardBytes(Stream source, int amount)
+        {
+            byte[] buffer = new byte[65536];
+            int bytesRead = 0;
+            while (amount > 0)
+            {
+                bytesRead = Math.Min(amount, 65536);
+                source.Read(buffer, 0, bytesRead);
+                amount -= bytesRead;
+            }
+        }
+
         public static int GetLineReductionDivisor(int[] offsets)
         {
             int offsetCount = offsets.Length;

@@ -13,7 +13,7 @@ namespace Scharfrichter.Codec.Charts
             BinaryReaderEx reader = new BinaryReaderEx(source);
 
             Chart result = new Chart();
-            result.TickRate = new Fraction(100, 5980);
+            result.TickRate = new Fraction(100, 5983);
 
             int[] lastSample = new int[16];
             int eventParameter = 0;
@@ -38,7 +38,7 @@ namespace Scharfrichter.Codec.Charts
                 // ignore events in note count mode
                 if (notecountMode)
                 {
-                    if (eventType != 0 || eventOffset > 0)
+                    if ((eventType != 0 && eventType != 1) || eventOffset > 0)
                         notecountMode = false;
                 }
 

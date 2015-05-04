@@ -59,6 +59,9 @@ namespace Scharfrichter.Codec.Sounds
             // determine panning
             result.Panning = (float)(properties.Panning - 1) / (float)0x7E;
 
+            // we already precalculated volume
+            result.VolumeIsLinear = true;
+
             // return the final result
             return result;
         }

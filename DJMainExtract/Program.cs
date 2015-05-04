@@ -230,7 +230,7 @@ namespace DJMainExtract
 
                             for (int j = 0; j < totalChunks; j++)
                             {
-                                fs.Read(rawData, 0, rawData.Length);
+                                fs.Read(rawData, 0, CHUNK_LENGTH);
 
                                 using (MemoryStream ms = new MemoryStream(rawData))
                                 {
@@ -247,30 +247,10 @@ namespace DJMainExtract
                                             ConvertHelper.BemaniToBMS.ConvertChart(chunk.Charts[chartIndex], config, chartPath, chartIndex, chunk.SampleMaps[sampleMapAssignment[chartIndex]]);
                                         }
 
-                                        Console.WriteLine("Writing log for " + j.ToString());
-                                        using (var logStream = new FileStream(Path.Combine(soundPath, @"@log.txt"), FileMode.Create, FileAccess.ReadWrite, FileShare.Read))
-                                        {
-                                            StreamWriter log = new StreamWriter(logStream);
-                                            log.WriteLine("--- KEYSOUND LOG ---");
-                                            log.WriteLine("Idx\tVol\tPan\tChn");
-                                            
-                                            for (var soundIndex = 0; soundIndex < chunk.SoundCount; soundIndex++)
-                                            {
-                                                var sound = chunk.Sounds[soundIndex];
-                                                log.Write(Util.ConvertToBMEString(soundIndex + 1, 4) + "\t");
-                                                log.Write(FormatLogValue(sound.Volume) + "\t");
-                                                log.Write(FormatLogValue(sound.Panning) + "\t");
-                                                log.Write(FormatLogValue(sound.Channel) + "\t");
-                                                log.WriteLine();
-                                            }
-
-                                            log.Flush();
-                                        }
-
                                         Console.WriteLine("Consolidating set " + j.ToString());
                                         ConvertHelper.StereoCombiner.Process(chunk.Sounds, chunk.Charts, stereoAmp);
                                         Console.WriteLine("Writing set " + j.ToString());
-                                        ConvertHelper.BemaniToBMS.ConvertSounds(chunk.Sounds, soundPath, 0.5f);
+                                        ConvertHelper.BemaniToBMS.ConvertSounds(chunk.Sounds, soundPath, 0.6f);
                                     }
                                     else
                                     {
