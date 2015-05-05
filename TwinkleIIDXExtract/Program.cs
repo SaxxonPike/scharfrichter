@@ -33,7 +33,7 @@ namespace TwinkleIIDXExtract
                 args = new string[] { Console.ReadLine() };
                 if (args[0] == "")
                 {
-                    args[0] = @"d:\CHDs\135.bin";
+                    args[0] = @"d:\CHDs\iidx8th.zip";
                 }
             }
 
@@ -67,9 +67,9 @@ namespace TwinkleIIDXExtract
                     config["IIDX"].SetDefaultString("Difficulty1", "2");
                     config["IIDX"].SetDefaultString("Difficulty2", "1");
                     config["IIDX"].SetDefaultString("Difficulty3", "4");
-                    config["IIDX"].SetDefaultString("Difficulty4", "5");
-                    config["IIDX"].SetDefaultString("Difficulty5", "6");
-                    config["IIDX"].SetDefaultString("Difficulty6", "7");
+                    config["IIDX"].SetDefaultString("Difficulty4", "3");
+                    config["IIDX"].SetDefaultString("Difficulty5", "2");
+                    config["IIDX"].SetDefaultString("Difficulty6", "4");
                     config["IIDX"].SetDefaultString("Difficulty7", "8");
 
                     var source = ConvertHelper.StreamAdapter.Open(args[i]);
@@ -99,7 +99,7 @@ namespace TwinkleIIDXExtract
 
                             using (MemoryStream ms = new MemoryStream(rawData))
                             {
-                                FirebeatChunk chunk = FirebeatChunk.Read(ms, chartOffsets, sampleMapOffsets, 0x100000);
+                                TwinkleChunk chunk = TwinkleChunk.Read(ms, chartOffsets, sampleMapOffsets, 0x100000);
                                 string soundPath = Path.Combine(targetPath, Util.ConvertToDecimalString(j, 3));
                                 string chartPath = Path.Combine(soundPath, Util.ConvertToDecimalString(j, 3));
 

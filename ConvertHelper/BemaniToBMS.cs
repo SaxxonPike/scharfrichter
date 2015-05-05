@@ -217,7 +217,16 @@ namespace ConvertHelper
                     bms.SampleMap = map;
 
                 if (quantizeNotes > 0)
-                    bms.Charts[0].QuantizeNoteOffsets(quantizeNotes);
+                {
+                    try
+                    {
+                        bms.Charts[0].QuantizeNoteOffsets(quantizeNotes);
+                    }
+                    catch (Exception)
+                    {
+                        // something weird happened
+                    }
+                }
                 bms.GenerateSampleTags();
                 bms.Write(mem, true);
 
