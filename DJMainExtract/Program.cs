@@ -208,8 +208,6 @@ namespace DJMainExtract
 
                     // default config
                     config = new Configuration();
-                    config["BMS"].SetDefaultValue("QuantizeMeasure", 16);
-                    config["BMS"].SetDefaultValue("QuantizeNotes", 192);
                     sampleMapOffsets = new int[] { 0x000000, 0x000200 };
                     sampleMapAssignment = new int[] { 0, 0, 0, 0, 0, 0 };
                     soundOffset = 0x002000;
@@ -230,7 +228,10 @@ namespace DJMainExtract
 
                             for (int j = 0; j < totalChunks; j++)
                             {
-                                fs.Read(rawData, 0, CHUNK_LENGTH);
+                                if (fs.Read(rawData, 0, CHUNK_LENGTH) < CHUNK_LENGTH)
+                                {
+                                    break;
+                                }
 
                                 using (MemoryStream ms = new MemoryStream(rawData))
                                 {

@@ -10,7 +10,7 @@ namespace Scharfrichter.Common
         static public Configuration LoadIIDXConfig(string configFileName)
         {
             Configuration config = Configuration.ReadFile(configFileName);
-            config["BMS"].SetDefaultValue("QuantizeMeasure", 16);
+            config["BMS"].SetDefaultValue("QuantizeMeasure", 0);
             config["BMS"].SetDefaultValue("QuantizeNotes", 192);
             config["BMS"].SetDefaultString("Difficulty1", "Beginner");
             config["BMS"].SetDefaultString("Difficulty2", "Normal");

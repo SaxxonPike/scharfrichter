@@ -42,6 +42,12 @@ namespace ConvertHelper
                 return new StreamAdapterInfo(CHD.Load(new FileStream(filename, FileMode.Open, FileAccess.Read)));
             }
 
+            if (filename.EndsWith(@".gz"))
+            {
+                var gz = new Gzip(filename);
+                return new StreamAdapterInfo(gz.GetDeflateStream(), 0x7FFFFFFFFFFFL); // stupid value to play nice with arithmetic
+            }
+
             if (filename.EndsWith(@".zip"))
             {
                 var zip = new Zip(filename);

@@ -51,13 +51,16 @@
     <Compile Include="Archives\BMS.cs" />
     <Compile Include="Archives\DJMain.cs" />
     <Compile Include="Archives\Firebeat.cs" />
+    <Compile Include="Archives\Gzip.cs" />
     <Compile Include="Archives\MicrosoftXWB.cs" />
     <Compile Include="Archives\StepmaniaSM.cs" />
     <Compile Include="Archives\Twinkle.cs" />
     <Compile Include="Archives\Zip.cs" />
     <Compile Include="Charts\Beatmania7Key.cs" />
+    <Compile Include="Charts\BeatmaniaIII.cs" />
     <Compile Include="Encryption\BemaniPCEout.cs" />
     <Compile Include="Sounds\RF5C400.cs" />
+    <Compile Include="Sounds\YMZ280B.cs" />
     <Compile Include="XACT3\Xact3WaveBank.cs" />
     <Compile Include="BinaryIO.cs" />
     <Compile Include="Charts\%40Chart.cs" />

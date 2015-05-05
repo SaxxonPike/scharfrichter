@@ -9,6 +9,7 @@ namespace Scharfrichter.Codec.Archives
 {
     public class Zip : IDisposable
     {
+        bool closeOnDispose;
         Stream source;
 
         public Zip(Stream source)
@@ -19,6 +20,7 @@ namespace Scharfrichter.Codec.Archives
 
         public Zip(string source)
         {
+            closeOnDispose = true;
             this.source = new FileStream(source, FileMode.Open, FileAccess.Read, FileShare.Read);
             Initialize();
         }
@@ -46,11 +48,12 @@ namespace Scharfrichter.Codec.Archives
 
         public void Dispose()
         {
-            if (source != null)
+            if (closeOnDispose && source != null)
             {
-                source.Dispose();
-                source = null;
+                closeOnDispose = false;
+                source.Close();
             }
+            source = null;
         }
 
         public IList<ZipDirectoryEntry> Files

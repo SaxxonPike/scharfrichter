@@ -54,7 +54,6 @@ namespace TwinkleIIDXExtract
                     var sampleMapOffsets = new int[] { 0x000000 };
 
                     Configuration config = new Configuration();
-                    config["BMS"].SetDefaultValue("QuantizeMeasure", 16);
                     config["BMS"].SetDefaultValue("QuantizeNotes", 192);
                     config["BMS"].SetDefaultString("Difficulty1", "5key");
                     config["BMS"].SetDefaultString("Difficulty2", "light");
@@ -93,11 +92,14 @@ namespace TwinkleIIDXExtract
                         for (int j = 0; j < totalChunks; j++)
                         {
                             Console.WriteLine("Reading " + j.ToString());
-                            fs.Read(rawData, 0, CHUNK_LENGTH);
+                            if (fs.Read(rawData, 0, CHUNK_LENGTH) < CHUNK_LENGTH)
+                            {
+                                break;
+                            }
 
                             using (MemoryStream ms = new MemoryStream(rawData))
                             {
-                                TwinkleChunk chunk = TwinkleChunk.Read(ms, chartOffsets, sampleMapOffsets, 0x100000);
+                                FirebeatChunk chunk = FirebeatChunk.Read(ms, chartOffsets, sampleMapOffsets, 0x100000);
                                 string soundPath = Path.Combine(targetPath, Util.ConvertToDecimalString(j, 3));
                                 string chartPath = Path.Combine(soundPath, Util.ConvertToDecimalString(j, 3));
 
