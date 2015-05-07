@@ -54,7 +54,6 @@ namespace TwinkleIIDXExtract
                     var sampleMapOffsets = new int[] { 0x000000 };
 
                     Configuration config = new Configuration();
-                    config["BMS"].SetDefaultValue("QuantizeNotes", 192);
                     config["BMS"].SetDefaultString("Difficulty1", "5key");
                     config["BMS"].SetDefaultString("Difficulty2", "light");
                     config["BMS"].SetDefaultString("Difficulty3", "normal");
