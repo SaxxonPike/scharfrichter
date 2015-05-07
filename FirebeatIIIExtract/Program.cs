@@ -54,7 +54,6 @@ namespace FirebeatIIIExtract
                     var sampleMapOffsets = new int[] { 0x800000 };
 
                     Configuration config = new Configuration();
-                    config["BMS"].SetDefaultValue("QuantizeMeasure", 0);
                     config["BMS"].SetDefaultValue("QuantizeNotes", 192);
                     config["BMS"].SetDefaultString("Difficulty1", "0x802000");
                     config["BMS"].SetDefaultString("Difficulty2", "0x807000");
@@ -126,10 +125,10 @@ namespace FirebeatIIIExtract
                                         {
                                             ConvertHelper.BemaniToBMS.ConvertChart(chunk.Charts[chartIndex], config, chartPath, chartIndex, chunk.SampleMaps[sampleMapAssignment[chartIndex]]);
                                         }
-                                        //Console.WriteLine("Consolidating set " + j.ToString());
-                                        //ConvertHelper.StereoCombiner.Process(chunk.Sounds, chunk.Charts);
-                                        //Console.WriteLine("Writing set " + j.ToString());
-                                        //ConvertHelper.BemaniToBMS.ConvertSounds(chunk.Sounds, soundPath, 0.6f);
+                                        Console.WriteLine("Consolidating set " + j.ToString());
+                                        ConvertHelper.StereoCombiner.Process(chunk.Sounds, chunk.Charts);
+                                        Console.WriteLine("Writing set " + j.ToString());
+                                        ConvertHelper.BemaniToBMS.ConvertSounds(chunk.Sounds, soundPath, 0.6f);
                                     }
                                     else
                                     {
