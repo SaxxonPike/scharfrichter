@@ -1,6 +1,8 @@
 # Scharfrichter
 A library and toolset designed for rhythm games.
 
+[![GitHub license](https://img.shields.io/github/license/saxxonpike/scharfrichter.svg)]()
+
 ## How to use
 This project is both a class library and a CLI toolset. If you just want the raw conversion
 functionality, just include the `Scharfrichter` project. There is a couple helper method inside
