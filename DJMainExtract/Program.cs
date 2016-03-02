@@ -162,8 +162,8 @@ namespace DJMainExtract
                 soundOffset = 0x20000;
                 chartOffsets = new int[] { 0x002000, 0x006000, 0x00A000, 0x00E000, 0x012000, 0x016000 };
                 sampleMapOffsets = new int[] { 0x000000, 0x001000 };
-                config["BMS"].SetDefaultString("Difficulty1", "normal");
-                config["BMS"].SetDefaultString("Difficulty2", "light");
+                config["BMS"].SetDefaultString("Difficulty1", "light");
+                config["BMS"].SetDefaultString("Difficulty2", "normal");
                 config["BMS"].SetDefaultString("Difficulty3", "another");
                 config["IIDX"].SetDefaultString("Difficulty0", "2");
                 config["IIDX"].SetDefaultString("Difficulty1", "1");
