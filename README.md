@@ -5,8 +5,7 @@ A library and toolset designed for rhythm games.
 
 ## Binary releases
 
-Because not everyone wants to have to build it themselves, you can find the toolset built for Windows platforms
-here: [Scharfrichter build on SaxxonPike.com](http://saxxonpike.com/bemani/scharfrichter.zip)
+[Windows binary releases are released here on Github.](https://github.com/SaxxonPike/scharfrichter/releases)
 
 ## How to use
 This project is both a class library and a CLI toolset. If you just want the raw conversion
