@@ -1,4 +1,4 @@
-﻿using Scharfrichter.Codec.Charts;
+using Scharfrichter.Codec.Charts;
 
 using System;
 using System.Collections.Generic;
@@ -55,13 +55,13 @@ namespace Scharfrichter.Codec.Archives
         public void CreateStepTag(Entry[] entries, string gameType, string description, string difficulty, string playLevel, string grooveRadar, int panelCount, int quantize)
         {
             StringBuilder builder = new StringBuilder();
-
+            
             builder.AppendLine("NOTES:");
-            builder.AppendLine(gameType + ":");
-            builder.AppendLine(description + ":");
-            builder.AppendLine(difficulty + ":");
-            builder.AppendLine(playLevel + ":");
-            builder.Append(grooveRadar);
+            builder.AppendLine("     " + gameType + ":");
+            builder.AppendLine("     " + description + ":");
+            builder.AppendLine("     " + difficulty + ":");
+            builder.AppendLine("     " + playLevel + ":");
+            builder.Append("     " + grooveRadar);
 
             string tagName = builder.ToString();
             int count = entries.Length;
@@ -113,7 +113,8 @@ namespace Scharfrichter.Codec.Archives
 
                 if (!firstMeasure)
                     builder.Append(",");
-                builder.AppendLine("   // measure " + (measure + 1).ToString());
+                //builder.AppendLine("   // measure " + (measure + 1).ToString());
+                builder.AppendLine("");
 
                 firstMeasure = false;
 
@@ -185,7 +186,7 @@ namespace Scharfrichter.Codec.Archives
                     }
                     else
                     {
-                        Tags["DisplayBPM"] = Math.Round(value).ToString();
+                        Tags["DISPLAYBPM"] = Math.Round(value).ToString();
                     }
 
                     bpmTag += offset.ToString();
@@ -210,11 +211,15 @@ namespace Scharfrichter.Codec.Archives
                     bpmResult = lowBPM.ToString() + ":" + highBPM.ToString();
                 else
                     bpmResult = lowBPM.ToString();
-                Tags["DisplayBPM"] = bpmResult;
+
+                if (lowBPM != highBPM)
+                    Tags["DISPLAYBPM"] = bpmResult;
             }
 
-            Tags["BPMs"] = bpmTag;
-            Tags["Stops"] = stopTag;
+            Tags["BPMS"] = bpmTag;
+
+            if (stopTag != "")
+                Tags["STOPS"] = stopTag;
         }
 
         public void Write(Stream target)
@@ -223,7 +228,15 @@ namespace Scharfrichter.Codec.Archives
             foreach (KeyValuePair<string, string> tag in Tags)
             {
                 string val = "#" + tag.Key + ":" + tag.Value + ";";
-                writer.WriteLine(val);
+
+                if ( val.Contains("SongID") )
+                    val = "//----- song ID: " + tag.Value + " -----//";
+
+                if (val.Contains("#NOTES"))
+                    writer.WriteLine("");
+
+                if ( tag.Value != "" )
+                  writer.WriteLine(val);
             }
             writer.Flush();
         }
