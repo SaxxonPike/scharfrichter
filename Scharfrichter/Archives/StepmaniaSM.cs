@@ -229,14 +229,13 @@ namespace Scharfrichter.Codec.Archives
             {
                 string val = "#" + tag.Key + ":" + tag.Value + ";";
 
-                if ( val.Contains("SongID") )
+                if (val.Contains("SongID"))
                     val = "//----- song ID: " + tag.Value + " -----//";
 
                 if (val.Contains("#NOTES"))
                     writer.WriteLine("");
 
-                if ( tag.Value != "" )
-                  writer.WriteLine(val);
+                writer.WriteLine(val);
             }
             writer.Flush();
         }
