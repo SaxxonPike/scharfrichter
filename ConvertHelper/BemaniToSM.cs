@@ -44,6 +44,23 @@ namespace ConvertHelper
                 Console.WriteLine( "SSQ, XWB" );
             }
 
+            string iSelect = "";
+
+            foreach( string filename in args )
+            {
+                if( File.Exists(filename) && Path.GetExtension(filename).ToUpper() == ".SSQ" )
+                {
+                    Console.WriteLine();
+                    Console.Write( "At least one ssq files detected." );
+                    Console.WriteLine();
+                    Console.Write( "Enable manual fill-up simfile data?" );
+                    Console.WriteLine();
+                    Console.Write( "Input y for Yes, ENTER for No: ");
+                    iSelect = Console.ReadLine();
+                    break;
+                }
+            }
+
             // process
             foreach( string filename in args )
             {
@@ -91,16 +108,11 @@ namespace ConvertHelper
                                 string iTitleTranslit = "";
                                 string iArtistTranslit = "";
                                 string iCDTitle = "";
-                                string iSelect = "";
 
                                 using( FileStream fs = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite) )
                                 {
                                     BemaniSSQ ssq = BemaniSSQ.Read(fs, 0x1000);
                                     StepmaniaSM sm = new StepmaniaSM();
-
-                                    Console.WriteLine();
-                                    Console.Write( "Fill up data for this simfile? y for Yes, ENTER for No: " );
-                                    iSelect = Console.ReadLine();
 
                                     if( iSelect == "y" )
                                     {
