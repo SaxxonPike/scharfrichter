@@ -106,7 +106,7 @@ namespace Scharfrichter.Codec.Archives
                         freezeIndex++;
                         freezeIndex++; // freeze type, ignored for now
                     }
-                    else if ((stepData & 0xF) == 0xF)
+                    else if (((stepData & 0xF) == 0xF) || ((stepData & 0xF0) == 0xF0))
                     {
                         isShock = true;
                     }
