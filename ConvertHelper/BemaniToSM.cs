@@ -1,4 +1,4 @@
-﻿using Scharfrichter.Codec;
+using Scharfrichter.Codec;
 using Scharfrichter.Codec.Archives;
 using Scharfrichter.Codec.Charts;
 using Scharfrichter.Codec.Sounds;
@@ -23,60 +23,78 @@ namespace ConvertHelper
             Configuration config = LoadConfig();
 
             // splash
-            Splash.Show("Bemani To Stepmania");
+            Splash.Show( "Bemani To Stepmania" );
 
             // parse args
             string[] args;
-            if (inArgs.Length > 0)
+            if( inArgs.Length > 0 )
                 args = Subfolder.Parse(inArgs);
             else
                 args = inArgs;
 
             // usage if no args present
-            if (args.Length == 0)
+            if( args.Length == 0 )
             {
                 Console.WriteLine();
-                Console.WriteLine("Usage: BemaniToSM <input file>");
+                Console.WriteLine( "Usage: BemaniToSM <input file>" );
                 Console.WriteLine();
-                Console.WriteLine("Drag and drop with files and folders is fully supported for this application.");
+                Console.WriteLine( "Drag and drop with files and folders is fully supported for this application." );
                 Console.WriteLine();
-                Console.WriteLine("Supported formats:");
-                Console.WriteLine("SSQ, XWB");
+                Console.WriteLine( "Supported formats:" );
+                Console.WriteLine( "SSQ, XWB" );
+            }
+
+            string iSelect = "";
+
+            foreach( string filename in args )
+            {
+                if( File.Exists(filename) && Path.GetExtension(filename).ToUpper() == ".SSQ" )
+                {
+                    Console.WriteLine();
+                    Console.Write( "At least one ssq files detected." );
+                    Console.WriteLine();
+                    Console.Write( "Enable manual fill-up simfile data?" );
+                    Console.WriteLine();
+                    Console.Write( "Input y for Yes, ENTER for No: ");
+                    iSelect = Console.ReadLine();
+                    break;
+                }
             }
 
             // process
-            foreach (string filename in args)
+            foreach( string filename in args )
             {
-                if (File.Exists(filename))
+                if( File.Exists(filename) )
                 {
                     Console.WriteLine();
-                    Console.WriteLine("Processing File: " + filename);
-                    switch (Path.GetExtension(filename).ToUpper())
+                    Console.WriteLine( "Processing File: " + filename );
+
+                    switch( Path.GetExtension(filename).ToUpper() )
                     {
                         case @".XWB":
                             {
-                                using (FileStream fs = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                                using( FileStream fs = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite) )
                                 {
-                                    Console.WriteLine("Reading XWB bank");
+                                    Console.WriteLine( "Reading XWB bank" );
                                     MicrosoftXWB bank = MicrosoftXWB.Read(fs);
-                                    string outPath = Path.Combine(Path.GetDirectoryName(filename), Path.GetFileNameWithoutExtension(filename));
+                                    string outPath = Path.Combine( Path.GetDirectoryName(filename), Path.GetFileNameWithoutExtension(filename) );
 
-                                    Directory.CreateDirectory(outPath);
+                                    Directory.CreateDirectory( outPath );
 
                                     int count = bank.SoundCount;
 
-                                    for (int i = 0; i < count; i++)
+                                    for( int i=0; i<count; i++ )
                                     {
                                         string outFileName;
 
-                                        if ((bank.Sounds[i].Name == null) || (bank.Sounds[i].Name == ""))
+                                        if( bank.Sounds[i].Name == null || bank.Sounds[i].Name == "" )
                                             outFileName = Util.ConvertToHexString(i, 4);
                                         else
                                             outFileName = bank.Sounds[i].Name;
 
-                                        string outFile = Path.Combine(outPath, outFileName + ".wav");
-                                        Console.WriteLine("Writing " + outFile);
-                                        bank.Sounds[i].WriteFile(outFile, 1.0f);
+                                        string outFile = Path.Combine( outPath, outFileName + ".wav" );
+                                        Console.WriteLine( "Writing " + outFile );
+                                        bank.Sounds[i].WriteFile( outFile, 1.0f );
                                     }
 
                                     bank = null;
@@ -85,73 +103,176 @@ namespace ConvertHelper
                             break;
                         case @".SSQ":
                             {
-                                string outTitle = Path.GetFileNameWithoutExtension(filename);
-                                string outFile = Path.Combine(Path.GetDirectoryName(filename), Path.GetFileNameWithoutExtension(filename) + ".SM");
+                                string iTitle = "";
+                                string iArtist = "";
+                                string iTitleTranslit = "";
+                                string iArtistTranslit = "";
+                                string iCDTitle = "";
 
-                                Console.WriteLine();
-                                Console.WriteLine("Processing file " + filename);
-
-                                using (FileStream fs = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                                using( FileStream fs = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite) )
                                 {
                                     BemaniSSQ ssq = BemaniSSQ.Read(fs, 0x1000);
                                     StepmaniaSM sm = new StepmaniaSM();
 
-                                    sm.Tags["TITLE"] = outTitle;
-                                    sm.Tags["ARTIST"] = "";
-                                    sm.Tags["TITLETRANSLIT"] = "";
-                                    sm.Tags["ARTISTTRANSLIT"] = "";
-                                    sm.Tags["CDTITLE"] = "";
-                                    sm.Tags["BANNER"] = outTitle + ".png";
-                                    sm.Tags["BACKGROUND"] = outTitle + "-bg.png";
-                                    sm.Tags["OFFSET"] = "0.000";
-                                    sm.Tags["SAMPLELENGTH"] = "14.000";
-
-                                    sm.CreateTempoTags(ssq.TempoEntries.ToArray());
-
-                                    foreach (Chart chart in ssq.Charts)
+                                    if( iSelect == "y" )
                                     {
-                                        string gameType = config["SM"]["DanceMode" + chart.Tags["Panels"]];
-                                        string difficulty = config["SM"]["Difficulty" + config["DDR"]["Difficulty" + chart.Tags["Difficulty"]]];
-                                        chart.Entries.Sort();
+                                        Console.WriteLine();
+                                        Console.Write("TITLE: ");
+                                        iTitle = Console.ReadLine();
 
-                                        // solo chart check
-                                        if (gameType == config["SM"]["DanceMode6"])
-                                        {
-                                            foreach (Entry entry in chart.Entries)
-                                            {
-                                                if (entry.Type == EntryType.Marker)
-												{
-													switch (entry.Column)
-													{
-                                                        case 0: entry.Column = 0; break;
-                                                        case 1: entry.Column = 2; break;
-                                                        case 2: entry.Column = 3; break;
-                                                        case 3: entry.Column = 5; break;
-                                                        case 4: entry.Column = 1; break;
-                                                        case 6: entry.Column = 4; break;
-													}
-												}
-                                            }
-                                        }
+                                        Console.Write("ARTIST: ");
+                                        iArtist = Console.ReadLine();
 
-                                        // couples chart check
-                                        else if (gameType == config["SM"]["DanceMode4"])
+                                        Console.Write("TITLETRANSLIT: ");
+                                        iTitleTranslit = Console.ReadLine();
+
+                                        Console.Write("ARTISTTRANSLIT: ");
+                                        iArtistTranslit = Console.ReadLine();
+
+                                        Console.Write("Origin (for CDTitle): ");
+                                        iCDTitle = Console.ReadLine();
+
+                                        Console.WriteLine();
+                                        Console.WriteLine("Input difficulty ratings for song " + iTitle + " below.");
+                                        Console.WriteLine();
+                                    }
+
+                                    sm.Tags["SongID"] = Path.GetFileNameWithoutExtension(@filename);
+                                    sm.Tags["TITLE"] = iTitle;
+                                    sm.Tags["ARTIST"] = iArtist;
+
+                                    if( iSelect == "y" )
+                                    {
+                                        if( iTitleTranslit != "" )
+                                            sm.Tags["TITLETRANSLIT"] = iTitleTranslit;
+
+                                        if( iArtistTranslit != "" )
+                                            sm.Tags["ARTISTTRANSLIT"] = iArtistTranslit;
+                                    }
+                                    else
+                                    {
+                                        sm.Tags["TITLETRANSLIT"] = "";
+                                        sm.Tags["ARTISTTRANSLIT"] = "";
+                                    }
+
+                                    if( iTitleTranslit == "" )
+                                        sm.Tags["BANNER"] = iTitle + ".png";
+                                    else
+                                        sm.Tags["BANNER"] = iTitleTranslit + ".png";
+
+                                    if( iTitleTranslit == "" )
+                                        sm.Tags["BACKGROUND"] = iTitle + "-bg.png";
+                                    else
+                                        sm.Tags["BACKGROUND"] = iTitleTranslit + "-bg.png";
+
+                                    sm.Tags["CDTITLE"] = "./CDTitles/" + iCDTitle + ".png";
+
+                                    if( iTitleTranslit == "" )
+                                        sm.Tags["MUSIC"] = iTitle + ".ogg";
+                                    else
+                                        sm.Tags["MUSIC"] = iTitleTranslit + ".ogg";
+
+                                    sm.Tags["SAMPLESTART"] = "20";
+                                    sm.Tags["SAMPLELENGTH"] = "15";
+
+                                    sm.CreateTempoTags( ssq.TempoEntries.ToArray() );
+
+                                    string[] gType = { "dance-single", "dance-double", "dance-couple", "dance-solo" };
+                                    string meter = "";
+
+                                    foreach( string gName in gType )
+                                    {
+                                        string[] dType = { "Beginner", "Easy", "Medium", "Hard", "Challenge", "" };
+
+                                        foreach( string dName in dType )
                                         {
-                                            foreach (Entry entry in chart.Entries)
+                                            foreach( Chart chart in ssq.Charts )
                                             {
-                                                if (entry.Type == EntryType.Marker && entry.Column >= 4)
+                                                string gameType = config["SM"]["DanceMode" + chart.Tags["Panels"]];
+                                                
+                                                if( gName == gameType )
                                                 {
-                                                    gameType = config["SM"]["DanceModeCouple"];
-                                                    chart.Tags["Panels"] = "8";
-                                                    break;
+                                                    string difficulty = config["SM"]["Difficulty" + config["DDR"]["Difficulty" + chart.Tags["Difficulty"]]];
+                                                    chart.Entries.Sort();
+
+                                                    if( gameType == config["SM"]["DanceMode8"] && difficulty == "" )
+                                                        break;
+
+                                                    if( dName == difficulty )
+                                                    {
+                                                        // solo chart check
+                                                        if( gameType == config["SM"]["DanceMode6"] )
+                                                        {
+                                                            foreach( Entry entry in chart.Entries )
+                                                            {
+                                                                if( entry.Type == EntryType.Marker )
+                                                                {
+                                                                    switch( entry.Column )
+                                                                    {
+                                                                        case 0: entry.Column = 0; break;
+                                                                        case 1: entry.Column = 2; break;
+                                                                        case 2: entry.Column = 3; break;
+                                                                        case 3: entry.Column = 5; break;
+                                                                        case 4: entry.Column = 1; break;
+                                                                        case 6: entry.Column = 4; break;
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+
+                                                        // couples chart check
+                                                        else if( gameType == config["SM"]["DanceMode4"] )
+                                                        {
+                                                            foreach( Entry entry in chart.Entries )
+                                                            {
+                                                                if( entry.Type == EntryType.Marker && entry.Column >= 4 )
+                                                                {
+                                                                    gameType = config["SM"]["DanceModeCouple"];
+                                                                    chart.Tags["Panels"] = "8";
+                                                                    break;
+                                                                }
+                                                            }
+                                                        }
+
+                                                        string difText = difficulty;
+
+                                                        switch( difficulty )
+                                                        {
+                                                            case "Easy": difText = "Basic"; break;
+                                                            case "Medium": difText = "Difficult"; break;
+                                                            case "Hard": difText = "Expert"; break;
+                                                            case "": difText = "Difficult"; break;
+                                                        }
+
+                                                        if( iSelect == "y" )
+                                                        {
+                                                            Console.Write(ToUpperFirstLetter(gameType.Replace("dance-", "")) + "-" + difText + ": ");
+                                                            meter = Console.ReadLine();
+                                                        }
+
+                                                        if( meter == "" )
+                                                            meter = "0";
+
+                                                        string dif = difficulty;
+
+                                                        if( difficulty == "" )
+                                                            dif = "Medium";
+
+                                                        sm.CreateStepTag( chart.Entries.ToArray(), gameType, "", dif, meter, "", System.Convert.ToInt32(chart.Tags["Panels"]), config["SM"].GetValue( "QuantizeNotes" ) );
+                                                    }
                                                 }
                                             }
                                         }
-
-                                        sm.CreateStepTag(chart.Entries.ToArray(), gameType, "", difficulty, "0", "", System.Convert.ToInt32(chart.Tags["Panels"]), config["SM"].GetValue("QuantizeNotes"));
                                     }
 
-                                    sm.WriteFile(outFile);
+                                    string outTitle = iTitle;
+
+                                    if( iTitleTranslit != "" )
+                                        outTitle = iTitleTranslit;
+                                    else if( iTitle == "" )
+                                        outTitle = Path.GetFileNameWithoutExtension(@filename);
+
+                                    sm.WriteFile( Path.Combine(Path.GetDirectoryName(filename), outTitle + ".sm") );
                                 }
                             }
                             break;
@@ -160,25 +281,37 @@ namespace ConvertHelper
             }
         }
 
+        static private string ToUpperFirstLetter( this string source )
+        {
+            if( string.IsNullOrEmpty(source) )
+                return string.Empty;
+            // convert to char array of the string
+            char[] letters = source.ToCharArray();
+            // upper case the first char
+            letters[0] = char.ToUpper(letters[0]);
+            // return the array made of the new char array
+            return new string(letters);
+        }
+
         static private Configuration LoadConfig()
         {
             Configuration config = Configuration.ReadFile(configFileName);
-            config["SM"].SetDefaultValue("QuantizeNotes", 192);
-            config["SM"].SetDefaultString("DanceMode4", "dance-single");
-            config["SM"].SetDefaultString("DanceMode6", "dance-solo");
-            config["SM"].SetDefaultString("DanceMode8", "dance-double");
-            config["SM"].SetDefaultString("DanceModeCouple", "dance-couple");
-            config["SM"].SetDefaultString("Difficulty0", "Beginner");
-            config["SM"].SetDefaultString("Difficulty1", "Easy");
-            config["SM"].SetDefaultString("Difficulty2", "Medium");
-            config["SM"].SetDefaultString("Difficulty3", "Hard");
-            config["SM"].SetDefaultString("Difficulty4", "Challenge");
-            config["SM"].SetDefaultString("Difficulty5", "Edit");
-            config["DDR"].SetDefaultString("Difficulty1", "1");
-            config["DDR"].SetDefaultString("Difficulty2", "2");
-            config["DDR"].SetDefaultString("Difficulty3", "3");
-            config["DDR"].SetDefaultString("Difficulty4", "4");
-            config["DDR"].SetDefaultString("Difficulty6", "0");
+            config["SM"].SetDefaultValue( "QuantizeNotes", 192 );
+            config["SM"].SetDefaultString( "DanceMode4", "dance-single" );
+            config["SM"].SetDefaultString( "DanceMode6", "dance-solo" );
+            config["SM"].SetDefaultString( "DanceMode8", "dance-double" );
+            config["SM"].SetDefaultString( "DanceModeCouple", "dance-couple" );
+            config["SM"].SetDefaultString( "Difficulty0", "Challenge" );
+            config["SM"].SetDefaultString( "Difficulty1", "Easy" );
+            config["SM"].SetDefaultString( "Difficulty2", "Medium" );
+            config["SM"].SetDefaultString( "Difficulty3", "Hard" );
+            config["SM"].SetDefaultString( "Difficulty4", "Beginner" );
+            config["SM"].SetDefaultString( "Difficulty5", "Edit" );
+            config["DDR"].SetDefaultString( "Difficulty1", "1" );
+            config["DDR"].SetDefaultString( "Difficulty2", "2" );
+            config["DDR"].SetDefaultString( "Difficulty3", "3" );
+            config["DDR"].SetDefaultString( "Difficulty4", "4" );
+            config["DDR"].SetDefaultString( "Difficulty6", "0" );
             return config;
         }
 
