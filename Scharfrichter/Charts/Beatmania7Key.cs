@@ -13,7 +13,7 @@ namespace Scharfrichter.Codec.Charts
             BinaryReaderEx reader = new BinaryReaderEx(source);
 
             Chart result = new Chart();
-            result.TickRate = new Fraction(10000, 598356); // refresh rate for Twinkle
+            result.TickRate = new Fraction(10000, 598000); // refresh rate for Twinkle
 
             int[] lastSample = new int[16];
             int eventParameter = 0;

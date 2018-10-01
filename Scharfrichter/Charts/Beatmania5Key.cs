@@ -13,7 +13,7 @@ namespace Scharfrichter.Codec.Charts
             BinaryReaderEx reader = new BinaryReaderEx(source);
 
             Chart result = new Chart();
-            result.TickRate = new Fraction(1, 58);
+            result.TickRate = new Fraction(1, 60);
 
             int[] lastSample = new int[16];
             int eventParameter = 0;

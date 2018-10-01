@@ -47,7 +47,7 @@ namespace Scharfrichter.Codec.Sounds
             int sourceIndex = 0;
             int targetIndex = desiredOffset;
 
-            while (sourceIndex < sourceLength)
+            while (sourceIndex < sourceLength - 3)
             {
                 sourceSampleL = sourceRendered[sourceIndex++];
                 sourceSampleL |= (int)(sourceRendered[sourceIndex++]) << 8;
@@ -80,13 +80,11 @@ namespace Scharfrichter.Codec.Sounds
                 }
                 else if (entry.Type == EntryType.Marker)
                 {
-                    Sound sound;
-
                     if (entry.Value.Numerator > 0)
                     {
                         byte[] soundData = null;
-                        int soundIndex = (int)entry.Value - 1;
-                        sound = sounds[(int)entry.Value - 1];
+                        var soundIndex = (int)entry.Value - 1;
+                        var sound = soundIndex < sounds.Length ? sounds[soundIndex] : null;
 
                         if (renderedSamples.ContainsKey(soundIndex))
                         {
@@ -98,8 +96,8 @@ namespace Scharfrichter.Codec.Sounds
                             renderedSamples[soundIndex] = soundData;
                         }
 
-                        Fraction cutoff = new Fraction(-1, 1);
-                        if (sound.Channel >= 0 && noteCutoff.ContainsKey(sound.Channel))
+                        var cutoff = new Fraction(-1, 1);
+                        if (sound != null && sound.Channel >= 0 && noteCutoff.ContainsKey(sound.Channel))
                         {
                             cutoff = noteCutoff[sound.Channel];
                         }
@@ -107,7 +105,7 @@ namespace Scharfrichter.Codec.Sounds
                         {
                             Paste(soundData, ref buffer, entry.LinearOffset * chart.TickRate, cutoff * chart.TickRate);
                         }
-                        if (sound.Channel >= 0)
+                        if (sound != null && sound.Channel >= 0)
                             noteCutoff[sound.Channel] = entry.LinearOffset;
                     }
                 }
