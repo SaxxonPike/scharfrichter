@@ -199,3 +199,7 @@ FakesAssemblies/
 [Oo]utput/*.exe
 [Oo]utput/*.pdb
 [Oo]utput/*.dll
+
+# Jetbrains
+.idea/
+
